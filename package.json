@@ -1,0 +1,19 @@
+{
+  "name": "m52-taquilla-qr",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Validador de QR de Lista 52 conectado a Kommo",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "cf:db": "wrangler d1 migrations apply taquilla-m52 --local",
+    "cf:dev": "wrangler dev",
+    "cf:deploy": "wrangler deploy"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "wrangler": "^4.162.0"
+  }
+}

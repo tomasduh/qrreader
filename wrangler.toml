@@ -1,0 +1,29 @@
+name = "taquilla-m52"
+main = "src/worker.js"
+compatibility_date = "2025-09-01"
+
+# Dirección propia. Cloudflare crea el registro DNS y el certificado HTTPS solos;
+# el dominio tiene que estar en la misma cuenta de Cloudflare que el Worker.
+workers_dev = false
+routes = [{ pattern = "qrreader.tomasduarte.dev", custom_domain = true }]
+
+# La web son archivos estáticos; el Worker solo corre para /api/*.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "taquilla-m52"
+database_id = "e154f3b2-ad67-43d0-b732-6909700ed40d"
+migrations_dir = "migrations"
+
+[vars]
+KOMMO_SUBDOMAIN = "m52discobar"
+KOMMO_PIPELINE = "Lista 52"
+STAGE_ARRIVED = "Llegó"
+STAGES_ALLOWED = "Inscrito,Reconfirmó"
+
+# Secretos (no van aquí): npx wrangler secret put KOMMO_TOKEN
+#                         npx wrangler secret put APP_PIN

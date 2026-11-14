@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>Taquilla M52</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Big+Shoulders+Display:wght@300;500;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">M<sup>52</sup></span>
+      <span class="brand-text">Taquilla <span id="pipelineName">Lista 52</span></span>
+    </div>
+    <span class="demo-tag" id="demoTag" hidden>Demo</span>
+  </header>
+
+  <main>
+    <section class="scanner" aria-label="Validar QR">
+      <div class="viewport" id="viewport">
+        <video id="video" playsinline muted hidden></video>
+        <div class="frame" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <div class="idle" id="idle">
+          <button class="primary" id="startBtn" type="button">Validar QR</button>
+          <p class="hint" id="cameraHint">Abre la cámara y apunta al QR del invitado.</p>
+        </div>
+        <p class="scan-status" id="scanStatus" hidden aria-live="off"></p>
+        <button class="ghost stop" id="stopBtn" type="button" hidden>Cerrar cámara</button>
+      </div>
+
+      <form class="manual" id="manualForm" autocomplete="off">
+        <label for="codeInput">¿No lee el QR? Escribe el código</label>
+        <div class="manual-row">
+          <input id="codeInput" name="code" inputmode="text" autocapitalize="characters" spellcheck="false" placeholder="M52-QDNMN" maxlength="24">
+          <button class="secondary" type="submit">Validar código</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="log" aria-label="Validaciones de esta sesión">
+      <div class="log-head">
+        <h2>Esta noche</h2>
+        <p class="count"><strong id="countOk">0</strong> entraron</p>
+      </div>
+      <ol id="logList"></ol>
+      <p class="empty" id="logEmpty">Aún no validas ningún QR. Los que valides aparecen aquí.</p>
+      <button class="secondary csv" id="csvBtn" type="button">Descargar lista de entradas</button>
+    </section>
+  </main>
+
+  <!-- Resultado a pantalla completa -->
+  <div class="result" id="result" hidden role="alertdialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="result-body">
+      <p class="verdict" id="resultTitle"></p>
+      <h1 class="person" id="resultName"></h1>
+      <p class="message" id="resultMessage"></p>
+      <dl class="details" id="resultDetails"></dl>
+    </div>
+    <button class="primary" id="nextBtn" type="button">Validar siguiente</button>
+  </div>
+
+  <div class="loading" id="loading" hidden aria-live="polite">Validando con Kommo…</div>
+
+  <dialog id="pinDialog">
+    <form method="dialog" id="pinForm">
+      <h2>PIN de taquilla</h2>
+      <input id="pinInput" type="password" inputmode="numeric" autocomplete="off" aria-label="PIN" required>
+      <p class="pin-error" id="pinError" hidden>PIN incorrecto. Inténtalo otra vez.</p>
+      <button class="primary" type="submit">Entrar</button>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <script src="logoqr.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+.env
+node_modules/
+certs/
+tools/
+.dev.vars
+data/
+.wrangler/
+.claude/
