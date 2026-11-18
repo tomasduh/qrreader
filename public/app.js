@@ -24,7 +24,6 @@ const els = {
   logEmpty: $('logEmpty'),
   countOk: $('countOk'),
   demoTag: $('demoTag'),
-  pipelineName: $('pipelineName'),
   pinDialog: $('pinDialog'),
   pinForm: $('pinForm'),
   pinInput: $('pinInput'),
@@ -102,7 +101,6 @@ async function init() {
   try {
     const { data } = await api('/api/status');
     els.demoTag.hidden = data.mode !== 'demo';
-    if (data.pipeline) els.pipelineName.textContent = data.pipeline;
     if (data.pinRequired && !data.pinValid) askPin(false);
     else loadEntries();
   } catch {
