@@ -14,6 +14,8 @@ const els = {
   result: $('result'),
   resultTitle: $('resultTitle'),
   resultName: $('resultName'),
+  resultCedula: $('resultCedula'),
+  resultWarn: $('resultWarn'),
   resultMessage: $('resultMessage'),
   resultDetails: $('resultDetails'),
   nextBtn: $('nextBtn'),
@@ -159,6 +161,21 @@ function showResult(data) {
   els.resultTitle.textContent = VERDICTS[data.result] || VERDICTS.error;
   els.resultName.textContent = person?.name || data.code || '';
   els.resultName.hidden = !els.resultName.textContent;
+
+  // La cédula va grande: es lo que la taquilla compara con el documento de la persona.
+  // cedula === undefined son entradas guardadas antes de este cambio: no se avisa nada.
+  const cedula = person?.cedula;
+  els.resultCedula.hidden = !cedula;
+  els.resultCedula.textContent = cedula ? 'Cédula ' + (/^\d+$/.test(cedula) ? Number(cedula).toLocaleString('es-CO') : cedula) : '';
+  const warning = !person
+    ? ''
+    : person.cedula === null
+      ? 'Sin cédula registrada en Kommo. Pide el documento y verifícalo a mano.'
+      : person.cedulaMismatch
+        ? 'La cédula del contacto y la de la lista no coinciden. Revisa bien el documento.'
+        : '';
+  els.resultWarn.hidden = !warning;
+  els.resultWarn.textContent = warning;
   els.resultMessage.textContent = data.message || '';
 
   const rows = [];

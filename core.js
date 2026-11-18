@@ -46,11 +46,26 @@ function describe(lead, contact, code, stageName) {
       name: f.field_name,
       value: (f.values ?? []).map((v) => formatValue(f, v.value)).join(', '),
     }))
-    .filter((f) => f.value && !f.value.toUpperCase().includes(code));
+    .filter((f) => f.value && !f.value.toUpperCase().includes(code) && norm(f.name) !== 'cedula lista');
+
+  // La cédula es lo que la taquilla compara con el documento. Kommo la guarda en dos
+  // sitios: el campo "Cédula" del contacto y "Cédula lista" del lead (que a veces solo trae "...").
+  const digits = (v) => String(v ?? '').replace(/\D/g, '');
+  const valueOf = (entity, name) =>
+    (entity?.custom_fields_values ?? []).find((f) => norm(f.field_name) === name)?.values?.[0]?.value;
+  const fromContact = digits(valueOf(contact, 'cedula'));
+  const fromList = digits(valueOf(lead, 'cedula lista'));
+  const valid = (d) => d.length >= 5;
+  const cedula = valid(fromContact) ? fromContact : valid(fromList) ? fromList : null;
+  const cedulaMismatch = valid(fromContact) && valid(fromList) && fromContact !== fromList;
+  if (cedulaMismatch) fields.push({ name: 'Cédula en la lista', value: fromList });
+
   return {
     leadId: lead.id,
     name: contact?.name || lead.name,
     phone: phone?.values?.[0]?.value ?? null,
+    cedula,
+    cedulaMismatch,
     code,
     stage: stageName,
     registeredAt: lead.created_at ? lead.created_at * 1000 : null,
@@ -195,12 +210,13 @@ export function createCore({ config, crm, store }) {
 
   async function entriesCsv(since = 0) {
     const rows = await store.list(since, 5000);
-    const head = ['hora', 'codigo', 'nombre', 'telefono', 'lead_id', 'etapa_anterior'];
+    const head = ['hora', 'codigo', 'nombre', 'cedula', 'telefono', 'lead_id', 'etapa_anterior'];
     const lines = rows.map((r) =>
       [
         new Date(r.at).toLocaleString('sv-SE', { timeZone: 'America/Bogota' }),
         r.code,
         r.name,
+        r.person?.cedula ?? '',
         r.person?.phone ?? '',
         r.leadId,
         r.stageBefore,

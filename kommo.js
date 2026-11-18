@@ -111,16 +111,17 @@ export function createDemo({ pipelineName }) {
   });
 
   const seed = [
-    ['M52-QDNMN', 'Laura Pérez Gómez', '+57 300 111 2233', 10, '21/07'],
-    ['M52-ABCDE', 'Andrés Rojas', '+57 301 444 5566', 11, '03/12'],
-    ['M52-USADO', 'Camila Torres', '+57 302 777 8899', 14, '15/02'],
-    ['M52-CANCE', 'Julián Castro', '+57 303 222 3344', 13, '30/09'],
-    ['M52-ESPER', 'Valentina Ruiz', '+57 304 555 6677', 12, '08/05'],
+    // código, nombre, teléfono, etapa, cumpleaños, cédula del contacto, "Cédula lista" del lead
+    ['M52-QDNMN', 'Laura Pérez Gómez', '+57 300 111 2233', 10, '21/07', '1012345678', '1012345678'],
+    ['M52-ABCDE', 'Andrés Rojas', '+57 301 444 5566', 11, '03/12', '1005342884', '...'],
+    ['M52-USADO', 'Camila Torres', '+57 302 777 8899', 14, '15/02', null, null],
+    ['M52-CANCE', 'Julián Castro', '+57 303 222 3344', 13, '30/09', '79111222', '80999888'],
+    ['M52-ESPER', 'Valentina Ruiz', '+57 304 555 6677', 12, '08/05', '52333444', null],
   ];
 
   const leads = new Map();
   const contacts = new Map();
-  seed.forEach(([code, name, phone, statusId, birthday], i) => {
+  seed.forEach(([code, name, phone, statusId, birthday, contactCedula, listCedula], i) => {
     const id = 11404900 + i;
     leads.set(id, {
       id,
@@ -128,13 +129,20 @@ export function createDemo({ pipelineName }) {
       status_id: statusId,
       pipeline_id: pipeline.id,
       created_at: Math.floor(Date.now() / 1000) - 86400 * (i + 1),
-      custom_fields_values: [field('Código Lista 52', code), field('Cumpleaños', birthday)],
+      custom_fields_values: [
+        field('Código Lista 52', code),
+        field('Cumpleaños', birthday),
+        ...(listCedula ? [field('Cédula lista', listCedula)] : []),
+      ],
       _embedded: { contacts: [{ id: id + 1000, is_main: true }] },
     });
     contacts.set(id + 1000, {
       id: id + 1000,
       name,
-      custom_fields_values: [{ ...field('Teléfono', phone), field_code: 'PHONE' }],
+      custom_fields_values: [
+        { ...field('Teléfono', phone), field_code: 'PHONE' },
+        ...(contactCedula ? [field('Cédula', contactCedula, 'numeric')] : []),
+      ],
     });
   });
 

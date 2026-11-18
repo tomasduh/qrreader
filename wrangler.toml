@@ -2,10 +2,17 @@ name = "taquilla-m52"
 main = "src/worker.js"
 compatibility_date = "2025-09-01"
 
-# Dirección propia. Cloudflare crea el registro DNS y el certificado HTTPS solos;
-# el dominio tiene que estar en la misma cuenta de Cloudflare que el Worker.
-workers_dev = false
-routes = [{ pattern = "qrreader.tomasduarte.dev", custom_domain = true }]
+# Cuenta de Cloudflare de M52 (no es secreto). Evita desplegar en otra cuenta.
+account_id = "1833c293e4ff79760e6236415a33918a"
+
+# Dirección de Cloudflare: https://taquilla-m52.[nombre-de-la-cuenta].workers.dev
+workers_dev = true
+preview_urls = false
+
+# Cuando m52disco.com esté en esta cuenta de Cloudflare, activar el subdominio propio
+# (Cloudflare crea el registro DNS y el certificado HTTPS solos):
+# workers_dev = false
+# routes = [{ pattern = "kommoqrvalidator.m52disco.com", custom_domain = true }]
 
 # La web son archivos estáticos; el Worker solo corre para /api/*.
 [assets]
@@ -16,7 +23,7 @@ run_worker_first = ["/api/*"]
 [[d1_databases]]
 binding = "DB"
 database_name = "taquilla-m52"
-database_id = "e154f3b2-ad67-43d0-b732-6909700ed40d"
+database_id = "804ad65b-52aa-4d12-8549-94608148b5eb"
 migrations_dir = "migrations"
 
 [vars]
